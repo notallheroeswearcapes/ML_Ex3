@@ -2,7 +2,7 @@
 
 ### Group Members
 * Matthias Eder, 01624856
-* x
+* Benedikt Hämmerle, 01352108
 * y
 
 ## Description
