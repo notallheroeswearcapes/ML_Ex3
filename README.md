@@ -51,7 +51,7 @@ optional step:
 
 | Package      	| Version 	|
 |--------------	|---------	|
-| Python       	| 3.9.0   	|
+| Python       	| 3.8.0   	|
 | click        	| 7.1.2 	|
 | setuptools   	| 53.0.0 	|
 | wheel        	| 0.36.2 	|
