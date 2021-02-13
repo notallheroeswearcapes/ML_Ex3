@@ -25,11 +25,11 @@ def train(ctx, data):
             "Wrong input. Please specify the \'-d\' or \'--data\' option either as \'CIFAR-10\' or \'FashionMNIST\'.")
         return
     ctx.obj = Context(data)
-    ctx.obj.model.test_prog_bar()
+    ctx.obj.model.load_data()
 
 
 @cli.command()
-@click.option("-a", "--algorithm", type=str, required=True, help="The classifier to run on the trained model.")
+@click.option("-a", "--algorithm", type=str, required=True, help="The classifier algorithm to run on the model.")
 @click.pass_context
 def classify(ctx, classifier):
     click.echo(classifier)

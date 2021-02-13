@@ -57,3 +57,10 @@ optional step:
 | wheel        	| 0.36.2 	|
 
 ## Guide
+creating the virtualenv https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env
+
+save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated
+
+install dependencies: `pip install -r requirements.txt`
+
+install the CLI: `pip install --editable .` from the project root directory
