@@ -16,3 +16,6 @@ class Model:
 
     def load_data(self):
         pass
+
+    def classify(self, classifier):
+        click.echo(classifier)

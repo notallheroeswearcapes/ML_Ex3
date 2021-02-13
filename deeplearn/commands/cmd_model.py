@@ -32,7 +32,12 @@ def train(ctx, data):
 @click.option("-a", "--algorithm", type=str, required=True, help="The classifier algorithm to run on the model.")
 @click.pass_context
 def classify(ctx, classifier):
-    click.echo(classifier)
+    if classifier != ("knn" or "mlp" or "decisiontree"):
+        click.echo(
+            "Wrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'knn\', \'mlp\' or "
+            "\'decisiontree\'.")
+        return
+    ctx.obj.model.classify(classifier)
 
 
 @cli.command()
