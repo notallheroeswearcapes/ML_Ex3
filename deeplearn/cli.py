@@ -1,27 +1,53 @@
-import os
 import click
+from deeplearn import model, classifier
 
 
-class ComplexCLI(click.MultiCommand):
-    def list_commands(self, ctx):
-        commands = []
-        commands_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
-        for filename in os.listdir(commands_folder):
-            if filename.endswith(".py") and filename.startswith("cmd_"):
-                commands.append(filename.replace("cmd_", "").replace(".py", ""))
-
-        commands.sort()
-        return commands
-
-    def get_command(self, ctx, name):
-        try:
-            mod = __import__(f"deeplearn.commands.cmd_{name}", None, None, ["cli"])
-        except ImportError:
-            return
-        return mod.cli
-
-
-@click.command(cls=ComplexCLI)
+@click.group()
 def cli():
-    """Welcome to our project!"""
+    """INSTRUCTIONS"""
+
+
+@cli.command()
+@click.option("-d", "--data", type=str, required=True,
+              help="Dataset to build the model on. Either CIFAR-10 or FashionMNIST.")
+def train(data):
+    """Loads the specified dataset and prepares it for classification."""
+
+    if data != ("CIFAR-10" or "FashionMNIST"):
+        click.echo(
+            "Wrong input. Please specify the \'-d\' or \'--data\' option either as \'CIFAR-10\' or \'FashionMNIST\'.")
+        return
+    x = model.Model(data)
+    x.load_data()
+    x.feature_rep()
+    x.feature_extraction()
+    x.vbow()
+
+
+@cli.command()
+@click.option("-a", "--algorithm", type=str, required=True, help="The classifier algorithm to run on the model.")
+def classify(algorithm):
+    """Runs a simple classification."""
+
+    if algorithm != ("knn" or "mlp" or "randomforest"):
+        click.echo(
+            "Wrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'knn\', \'mlp\' or "
+            "\'randomforest\'.")
+        return
+    clf = classifier.Classifier(algorithm)
+    clf.classify()
+
+
+@cli.command()
+@click.option("-a", "--architecture", type=str, required=True,
+              help="The architecture of the neural network to run on the trained model.")
+def cnn(architecture):
+    """Runs a Convolutional Neural Network."""
+
+    click.echo(architecture)
+
+
+@cli.command()
+def evaluate():
+    """Evaluates and compares the classification results."""
     pass

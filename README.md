@@ -52,9 +52,16 @@ optional step:
 | Package      	| Version 	|
 |--------------	|---------	|
 | Python       	| 3.8.0   	|
+| pip       	| 21.0.1  	|
 | click        	| 7.1.2 	|
 | setuptools   	| 53.0.0 	|
 | wheel        	| 0.36.2 	|
+| numpy         | 1.20.1    |
+| joblib        | 1.0.1     |
+| numpy         | 1.20.1    |
+| scikit-learn  | 0.24.1    |
+| scipy         | 1.6.0     |
+| threadpoolctl | 2.1.0     |
 
 ## Guide
 creating the virtualenv https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env
