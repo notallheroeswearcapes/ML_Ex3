@@ -54,13 +54,17 @@ optional step:
 | Python       	| 3.8.0   	|
 | pip       	| 21.0.1  	|
 | setuptools   	| 53.0.0 	|
-| UNDER CONSTRUCTION |
+| UNDER CONSTRUCTION| refer to requirements.txt|
 
-## Guide
-creating the virtualenv https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env
+## Installation Guide (for Windows)
+1. make sure to have Python 3.8 and pip 21.0.1 installed on your system
+2. clone this repository in a new directory with `git clone https://github.com/notallheroeswearcapes/ML_Ex3.git`
+3. navigate to the project root and create a virtual environment either by following [this tutorial](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env) for PyCharm or by running `virtualenv venv` in the command line
+4. activate the virtual environment by running `venv\scripts\activate`
+5. install the dependencies of our project by running `pip install -r requirements.txt` (it might be necessary to do this from a conda prompt)
+6. install our CLI by running `pip install .`
+7. now you should be able to run our project by running `deeplean`
 
-save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated
-
-install dependencies: `pip install -r requirements.txt`
-
-install the CLI: `pip install --editable .` from the project root directory
+## Development Guide
+* save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated
+* install the CLI: `pip install --editable .` from the project root directory
