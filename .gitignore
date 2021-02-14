@@ -130,3 +130,6 @@ dmypy.json
 
 # everything PyCharm related
 .idea
+
+# generated numpy data
+data
