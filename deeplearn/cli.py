@@ -1,5 +1,5 @@
 import click
-from deeplearn import model, classifier
+from deeplearn import model, classifier, bag_of_words
 
 
 @click.group()
@@ -37,6 +37,13 @@ def classify(algorithm):
     clf = classifier.Classifier(algorithm)
     clf.classify()
 
+@cli.command()
+def bov():
+    """Runs the visual bag of words."""
+
+    #train_histogram, test_histogram = bag_of_words()
+    bov = bag_of_words.VisualBagOfWords()
+    train_histogram, test_histogram = bov.build_bag()
 
 @cli.command()
 @click.option("-a", "--architecture", type=str, required=True,
