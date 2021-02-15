@@ -16,8 +16,10 @@ joblib==1.0.1
 Keras==2.4.3
 Keras-Preprocessing==1.1.2
 Markdown==3.3.3
-numpy>=1.19.2
+NEURON==7.8
+numpy==1.19.5
 oauthlib==3.1.0
+opencv-contrib-python==4.5.1.48
 opt-einsum==3.3.0
 prettytable==2.0.0
 protobuf==3.14.0
