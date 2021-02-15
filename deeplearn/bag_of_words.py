@@ -19,13 +19,19 @@ class VisualBagOfWords:
         self.test_data = self.test_data[0:10]
         descriptor_list_training = []
         descriptor_list_test = []
+        descriptor_list_training_stack = None
 
         click.echo("Extracting SIFT descriptors...")
         # For each training image extract desriptors using SIFT and store in descriptor_list
+        i = 0
         for img in self.train_data:
             _, descriptors = cv2.xfeatures2d.SIFT_create().detectAndCompute(img, None)
             if descriptors is not None:
                 descriptor_list_training.append(descriptors)
+                if descriptor_list_training_stack is None:
+                    descriptor_list_training_stack = descriptors
+                else:
+                    descriptor_list_training_stack = np.vstack((descriptor_list_training_stack, descriptors))
 
         # For each training image extract desriptors using SIFT and store in descriptor_list
         for img in self.test_data:
@@ -33,12 +39,6 @@ class VisualBagOfWords:
             if descriptors is not None:
                 descriptor_list_test.append(descriptors)
         click.echo("SIFT descriptors extracted")
-
-        def format_nd(l):
-            vStack = np.array(l[0])
-            for remaining in l[1:]:
-                vStack = np.vstack((vStack, remaining))
-            return vStack
 
         # For every
         def build_histogram(descriptor_list, cluster_alg):
@@ -48,15 +48,10 @@ class VisualBagOfWords:
                 histogram[i] += 1.0
             return histogram
 
-        # format to n x m
-        click.echo("Formatting...")
-        descriptor_list_training_vstack = format_nd(descriptor_list_training)
-        click.echo("Formatting done")
-
         # Cluster the descriptors together, every cluster will correspond to a visual word
         click.echo("KMeans clustering of descriptors...")
         kmeans = KMeans(n_clusters=20)
-        kmeans.fit(descriptor_list_training_vstack)
+        kmeans.fit(descriptor_list_training_stack)
         click.echo("Clustering done")
 
         # For every image in both training and testing, build a histogram from the descriptors and which cluster they
@@ -73,7 +68,7 @@ class VisualBagOfWords:
             test_histograms.append(histogram)
         click.echo("[Done] Visual bag of words histograms created")
 
-        return training_histograms, test_histograms
+        io.export_bov(training_histograms, test_histograms)
 
     def load_data(self):
         click.echo('Reading data...')

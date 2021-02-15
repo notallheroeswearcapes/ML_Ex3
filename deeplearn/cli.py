@@ -41,9 +41,9 @@ def classify(algorithm):
 def bov():
     """Runs the visual bag of words."""
 
-    #train_histogram, test_histogram = bag_of_words()
-    bov = bag_of_words.VisualBagOfWords()
-    train_histogram, test_histogram = bov.build_bag()
+    bag = bag_of_words.VisualBagOfWords()
+    bag.build_bag()
+
 
 @cli.command()
 @click.option("-a", "--architecture", type=str, required=True,
