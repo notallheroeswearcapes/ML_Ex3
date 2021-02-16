@@ -17,7 +17,7 @@ class Model:
         self.test_labels = None
         self.train_labels = None
 
-    def load_data(self):
+    def fetch_dataset(self):
         click.echo('Preparing {}...'.format(self.data))
 
         if path.exists('data/{}_raw_train_data.npy'.format(self.data)):

@@ -18,7 +18,7 @@ def train(data):
             "Wrong input. Please specify the \'-d\' or \'--data\' option either as \'CIFAR-10\' or \'FashionMNIST\'.")
         return
     x = model.Model(data)
-    x.load_data()
+    x.fetch_dataset()
     x.feature_rep()
     x.feature_extraction()
     x.vbow()
