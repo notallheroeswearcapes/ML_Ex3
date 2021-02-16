@@ -37,13 +37,6 @@ def classify(algorithm):
     clf = classifier.Classifier(algorithm)
     clf.classify()
 
-@cli.command()
-def bov():
-    """Runs the visual bag of words."""
-
-    bag = bag_of_words.VisualBagOfWords()
-    bag.build_bag()
-
 
 @cli.command()
 @click.option("-a", "--architecture", type=str, required=True,

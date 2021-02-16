@@ -14,24 +14,23 @@ class VisualBagOfWords:
 
     def build_bag(self):
 
-        self.load_data()
-        self.train_data = self.train_data[0:100]
-        self.test_data = self.test_data[0:10]
+        self.load_training_data()
+        #self.train_data = self.train_data[0:100]
+        #self.test_data = self.test_data[0:10]
         descriptor_list_training = []
         descriptor_list_test = []
-        descriptor_list_training_stack = None
-
+        length = 0
         click.echo("Extracting SIFT descriptors...")
         # For each training image extract desriptors using SIFT and store in descriptor_list
-        i = 0
+
         for img in self.train_data:
+
             _, descriptors = cv2.xfeatures2d.SIFT_create().detectAndCompute(img, None)
+
             if descriptors is not None:
                 descriptor_list_training.append(descriptors)
-                if descriptor_list_training_stack is None:
-                    descriptor_list_training_stack = descriptors
-                else:
-                    descriptor_list_training_stack = np.vstack((descriptor_list_training_stack, descriptors))
+                length += np.shape(descriptors)[0]
+
 
         # For each training image extract desriptors using SIFT and store in descriptor_list
         for img in self.test_data:
@@ -48,6 +47,17 @@ class VisualBagOfWords:
                 histogram[i] += 1.0
             return histogram
 
+        def format(l):
+            Stack = np.zeros((length, np.shape(l[0])[1]), dtype=np.float32)
+            index = 0
+            for remaining in l[0:]:
+                for row in remaining:
+                    Stack[index, :] = row
+                    index += 1
+            return Stack
+
+        descriptor_list_training_stack = format(descriptor_list_training)
+
         # Cluster the descriptors together, every cluster will correspond to a visual word
         click.echo("KMeans clustering of descriptors...")
         kmeans = KMeans(n_clusters=20)
@@ -61,16 +71,18 @@ class VisualBagOfWords:
         for dsc in descriptor_list_training:
             histogram = build_histogram(dsc, kmeans)
             training_histograms.append(histogram)
+        training_histograms = np.asarray(training_histograms)
 
         test_histograms = []
         for dsc in descriptor_list_test:
             histogram = build_histogram(dsc, kmeans)
             test_histograms.append(histogram)
-        click.echo("[Done] Visual bag of words histograms created")
+        test_histograms = np.asarray(test_histograms)
 
+        click.echo("[Done] Visual bag of words histograms created")
         io.export_bov(training_histograms, test_histograms)
 
-    def load_data(self):
+    def load_training_data(self):
         click.echo('Reading data...')
         self.train_data = io.import_numpy('data/CIFAR-10_train_data.npy')
         self.test_data = io.import_numpy('data/CIFAR-10_test_data.npy')
