@@ -57,7 +57,7 @@ optional step:
 | UNDER CONSTRUCTION| refer to requirements.txt|
 
 ## Installation Guide (for Windows)
-1. make sure to have Python 3.8 and pip 21.0.1 installed on your system
+1. make sure to have Python 3.8, pip 21.0.1 and virtualenv installed on your system
 2. clone this repository in a new directory with `git clone https://github.com/notallheroeswearcapes/ML_Ex3.git`
 3. navigate to the project root and create a virtual environment either by following [this tutorial](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env) for PyCharm or by running `virtualenv venv` in the command line
 4. activate the virtual environment by running `venv\scripts\activate`
@@ -65,6 +65,9 @@ optional step:
 6. install our CLI by running `pip install .`
 7. now you should be able to run our project by running `deeplearn`
 
+Note: It should not matter where you create the virtual environment but please make sure you run step 6 from the project root directory.
+ 
 ## Development Guide
 * save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated
 * install the CLI: `pip install --editable .` from the project root directory
+* if you install a new package: `pip install [package]` with activated virtualenv

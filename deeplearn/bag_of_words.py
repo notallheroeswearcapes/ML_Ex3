@@ -84,6 +84,6 @@ class VisualBagOfWords:
 
     def load_training_data(self):
         click.echo('Reading data...')
-        self.train_data = io.import_numpy('data/CIFAR-10_train_data.npy')
-        self.test_data = io.import_numpy('data/CIFAR-10_test_data.npy')
+        self.train_data = io.import_data('data/CIFAR-10_raw_train_data.npy')
+        self.test_data = io.import_data('data/CIFAR-10_raw_test_data.npy')
         click.echo('[DONE] Reading data.')

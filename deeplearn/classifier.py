@@ -18,7 +18,12 @@ class Classifier:
         'max_iter': 100,
         'random_state': 1
     }
-    RANDOMFOREST_PARAMS = {}
+    RANDOMFOREST_PARAMS = {
+        'n_estimators': 100,
+        'criterion': 'gini',
+        'random_state': 1,
+        'ccp_alpha': 0.0
+    }
 
     def __init__(self, algorithm):
         self.algorithm = algorithm
@@ -49,7 +54,12 @@ class Classifier:
                 random_state=self.MLP_PARAMS['random_state']
             )
         elif self.algorithm == "randomforest":
-            clf = ensemble.RandomForestClassifier()
+            clf = ensemble.RandomForestClassifier(
+                n_estimators=self.RANDOMFOREST_PARAMS['n_estimators'],
+                criterion=self.RANDOMFOREST_PARAMS['criterion'],
+                random_state=self.RANDOMFOREST_PARAMS['random_state'],
+                ccp_alpha=self.RANDOMFOREST_PARAMS['ccp_alpha']
+            )
 
         clf.fit(self.train_data, self.train_labels)
         prediction = clf.predict(self.test_data)
@@ -62,16 +72,16 @@ class Classifier:
             'accuracy': score,
             'prediction': prediction
         }
-        io.export_classification(self.results, 'cifar10', self.algorithm)
+        io.export_result(self.results, 'cifar10', self.algorithm)
 
         click.echo('[DONE] Classification with {}.'.format(self.algorithm))
 
     def load_data(self):
         click.echo('Reading data...')
-        self.train_data = io.import_numpy('data/cifar10_train_data.npy')
-        self.train_labels = io.import_numpy('data/cifar10_train_labels.npy')
-        self.test_data = io.import_numpy('data/cifar10_test_data.npy')
-        self.test_labels = io.import_numpy('data/cifar10_test_labels.npy')
+        self.train_data = io.import_data('data/cifar10_train_data.npy')
+        self.train_labels = io.import_data('data/cifar10_train_labels.npy')
+        self.test_data = io.import_data('data/cifar10_test_data.npy')
+        self.test_labels = io.import_data('data/cifar10_test_labels.npy')
         click.echo('[DONE] Reading data.')
 
     def evaluate(self):

@@ -5,6 +5,7 @@ from keras import datasets
 from os import path
 from deeplearn import io
 from sklearn.cluster import KMeans
+from PIL import Image
 
 
 class Model:
@@ -18,38 +19,52 @@ class Model:
 
     def load_data(self):
         click.echo('Preparing {}...'.format(self.data))
-        if self.data == 'CIFAR-10':
-            if path.exists('data/cifar10_train_data.npy'):
-                click.echo('{} already exists.'.format(self.data))
-            else:
-                click.echo('Fetching {}...'.format(self.data))
-                (train_data, train_labels), (test_data, test_labels) = datasets.cifar10.load_data()
-                click.echo('[DONE] Fetching {}.'.format(self.data))
 
-                click.echo('Exporting dataset files for {}...'.format(self.data))
-                io.export_data(self.data, train_data, train_labels, test_data, test_labels)
-                click.echo('[DONE] Exporting dataset files for {}.'.format(self.data))
-        elif self.data == 'FashionMNIST':
-            if path.exists('data/fashion_mnist_train_data'):
-                click.echo('{} already exists.'.format(self.data))
-            else:
-                click.echo('Fetching {}...'.format(self.data))
-                (train_data, train_labels), (test_data, test_labels) = datasets.cifar10.load_data()
-                click.echo('[DONE] Fetching {}.'.format(self.data))
+        if path.exists('data/{}_raw_train_data.npy'.format(self.data)):
+            click.echo('{} already exists.'.format(self.data))
+        else:
+            click.echo('Fetching {}...'.format(self.data))
+            if self.data == 'CIFAR-10':
+                (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.cifar10.load_data()
+            elif self.data == 'Fashion-MNIST':
+                (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.fashion_mnist.load_data()
+            click.echo('[DONE] Fetching {}.'.format(self.data))
 
-                click.echo('Exporting dataset files for {}...'.format(self.data))
-                io.export_data(self.data, train_data, train_labels, test_data, test_labels)
-                click.echo('[DONE] Exporting dataset files for {}.'.format(self.data))
+            click.echo('Exporting dataset files for {}...'.format(self.data))
+            io.export_data(self.data, 'raw', self.train_data, self.train_labels, self.test_data, self.test_labels)
+            click.echo('[DONE] Exporting dataset files for {}.'.format(self.data))
+
         click.echo('[DONE] Preparing {}.'.format(self.data))
 
     def feature_rep(self):
-        pass
+        feature_data = []
+        features_df = pd.DataFrame()
 
-    def feature_extraction(self):
-        pass
+        for fileName in self.test_data:
+
+            fileImage = Image.open(fileName)
+
+            # ensure that all images are RGB
+            fileImage = fileImage.convert('RGB')
+
+            # extract feature to 1D array
+            features = fileImage.histogram()
+
+            if (len(features) == 768):  # check if feature array is what we expect; else discard
+
+                # transform to array and then to df
+                feature_data = np.array(feature_data)
+                feature_data = pd.DataFrame(feature_data.reshape(-1, len(feature_data)))
+                feature_data.insert(0, "", fileName)
+
+                # append to dataframe for export
+            feature_df = feature_df.append(feature_data, ignore_index=True)
+
+        # export and finish
+        feature_df.to_csv("data1.csv")
+        click.echo("All features extracted!")
 
     def vbow(self):
-        self.load_training_data()
         y_train = self.train_labels
         y_test = self.test_labels
         # self.train_data = self.train_data[0:100]
@@ -58,7 +73,7 @@ class Model:
         descriptor_list_test = []
         length = 0
         click.echo("Extracting SIFT descriptors...")
-        # For each training image extract desriptors using SIFT and store in descriptor_list
+        # For each training image extract descriptors using SIFT and store in descriptor_list
         index = 0
         for img in self.train_data:
             _, descriptors = cv2.xfeatures2d.SIFT_create().detectAndCompute(img, None)
@@ -70,7 +85,7 @@ class Model:
             index += 1
         y_train = y_train[np.where(y_train != 255)]
 
-        # For each training image extract desriptors using SIFT and store in descriptor_list
+        # For each training image extract descriptors using SIFT and store in descriptor_list
         index = 0
         for img in self.test_data:
             _, descriptors = cv2.xfeatures2d.SIFT_create().detectAndCompute(img, None)
@@ -108,7 +123,7 @@ class Model:
         click.echo("Clustering done")
 
         # For every image in both training and testing, build a histogram from the descriptors and which cluster they
-        # belong to the values of the histogram is the number of occurences of the visual words
+        # belong to the values of the histogram is the number of occurrences of the visual words
         click.echo("Constructing image histograms...")
         training_histograms = []
         for dsc in descriptor_list_training:
@@ -123,12 +138,4 @@ class Model:
         test_histograms = np.asarray(test_histograms)
 
         click.echo("[Done] Visual bag of words histograms created")
-        io.export_bov(training_histograms, test_histograms, y_train, y_test)
-
-    def load_training_data(self):
-        click.echo('Reading data...')
-        self.train_data = io.import_numpy('data/CIFAR-10_train_data.npy')
-        self.test_data = io.import_numpy('data/CIFAR-10_test_data.npy')
-        self.train_labels = io.import_numpy('data/CIFAR-10_train_labels.npy')
-        self.test_labels= io.import_numpy('data/CIFAR-10_test_labels.npy')
-        click.echo('[DONE] Reading data.')
+        io.export_data(self.data, 'vbow', training_histograms, test_histograms, y_train, y_test)
