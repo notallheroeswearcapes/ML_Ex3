@@ -25,8 +25,9 @@ class Classifier:
         'ccp_alpha': 0.0
     }
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm, data):
         self.algorithm = algorithm
+        self.data = data
         self.train_data = None
         self.train_labels = None
         self.test_data = None
