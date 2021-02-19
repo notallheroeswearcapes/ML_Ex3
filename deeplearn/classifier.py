@@ -1,4 +1,5 @@
 import click
+import matplotlib.pyplot as plt
 from sklearn import neighbors, metrics, neural_network, ensemble
 from deeplearn import io
 from timeit import default_timer
@@ -34,7 +35,7 @@ class Classifier:
         self.results_rep = None
         self.results_vbow = None
 
-    def classify(self):
+    def run_classification(self):
         click.echo('\nParameters for classifier {}: {}'.format(self.algorithm, self.get_algorithm_params()))
 
         clf = None
@@ -61,67 +62,65 @@ class Classifier:
 
         click.echo('[START] Running classification on feature representation data...')
         (self.train_data, self.train_labels), (self.test_data, self.test_labels) = io.import_data(self.data, 'rep')
-        click.echo('Shape of training data: {}'.format(self.train_data.shape))
-        click.echo('Shape of training labels: {}'.format(self.train_labels.shape))
-        click.echo('Shape of test data: {}'.format(self.test_data.shape))
-        click.echo('Shape of test labels: {}'.format(self.test_labels.shape))
+        results_rep, clf = self.classify(clf, 'rep')
+        self.create_confusion_matrix(clf, 'Feature representation', self.test_data, self.test_labels)
+        click.echo('[DONE] Classification on feature representation data.')
+
+        click.echo('[START] Running classification on visual bag of words data...')
+        (self.train_data, self.train_labels), (self.test_data, self.test_labels) = io.import_data(self.data, 'vbow')
+        results_vbow, clf = self.classify(clf, 'vbow')
+        self.create_confusion_matrix(clf, 'Visual Bag of Words', self.test_data, self.test_labels)
+        click.echo('[DONE] Classification on visual bag of words data.')
+
+        self.evaluate(results_rep, results_vbow)
+        click.echo('\n[DONE] Classification with {}.'.format(self.algorithm))
+
+    def classify(self, clf, input_data):
         st = default_timer()
         clf.fit(self.train_data, self.train_labels.ravel())
         prediction = clf.predict(self.test_data)
         score = metrics.accuracy_score(self.test_labels, prediction)
         runtime = default_timer() - st
-        results_rep = {
+        results = {
             'data': self.data,
             'algorithm': self.algorithm,
-            'input_data': 'rep',
+            'input_data': input_data,
             'runtime': runtime,
             'accuracy': score,
             'prediction': prediction.tolist()
         }
-        io.export_result(results_rep, self.data, self.algorithm, 'rep')
-        click.echo('[DONE] Classification on feature representation data.')
-
-        click.echo('[START] Running classification on visual bag of words data...')
-        (self.train_data, self.train_labels), (self.test_data, self.test_labels) = io.import_data(self.data, 'vbow')
-        click.echo('Shape of training data: {}'.format(self.train_data.shape))
-        click.echo('Shape of training labels: {}'.format(self.train_labels.shape))
-        click.echo('Shape of test data: {}'.format(self.test_data.shape))
-        click.echo('Shape of test labels: {}'.format(self.test_labels.shape))
-        st = default_timer()
-        clf.fit(self.train_data, self.train_labels)
-        prediction = clf.predict(self.test_data)
-        score = metrics.accuracy_score(self.test_labels, prediction)
-        runtime = default_timer() - st
-        results_vbow = {
-            'data': self.data,
-            'algorithm': self.algorithm,
-            'input_data': 'vbow',
-            'runtime': runtime,
-            'accuracy': score,
-            'prediction': prediction.tolist()
-        }
-        io.export_result(results_vbow, self.data, self.algorithm, 'vbow')
-        click.echo('[DONE] Classification on visual bag of words data.')
-
-        self.evaluate(results_rep, results_vbow)
-
-        click.echo('\n[DONE] Classification with {}.'.format(self.algorithm))
+        io.export_results(results, self.data, self.algorithm, input_data)
+        return results, clf
 
     def evaluate(self, results_rep, results_vbow):
         click.echo('\nResults for classification of {} with {}:\n'.format(self.data, self.algorithm))
         table = PrettyTable(['', 'Runtime', 'Accuracy'])
         table.add_row(['feature representation',
                        '{}s'.format(round(results_rep['runtime'], 2)),
-                       '{}'.format(results_rep['accuracy'])])
+                       '{}'.format(round(results_rep['accuracy'], 4))])
         table.add_row(['visual bag of words',
                        '{}s'.format(round(results_vbow['runtime'], 2)),
-                       '{}'.format(results_vbow['accuracy'])])
+                       '{}'.format(round(results_vbow['accuracy'], 4))])
         mean_acc = (results_rep['accuracy'] + results_vbow['accuracy']) / 2
         mean_runtime = (results_rep['runtime'] + results_vbow['runtime']) / 2
         table.add_row(['mean',
                        '{}s'.format(round(mean_runtime, 2)),
-                       '{}'.format(mean_acc)])
+                       '{}'.format(round(mean_acc, 4))])
         print(table)
+
+        plt.show()
+
+    def create_confusion_matrix(self, clf, input_data, test_data, test_labels):
+        # Plot non-normalized confusion matrix
+        label_names = self.get_label_names()
+        disp = metrics.plot_confusion_matrix(clf, test_data, test_labels,
+                                             display_labels=label_names,
+                                             cmap=plt.cm.Blues)
+        title = 'Confusion matrix for {} with classifier {}\nInput data: {}'.format(self.data, self.algorithm, input_data)
+        disp.ax_.set_title(title)
+        plt.xticks(rotation=45)
+        plt.show()
+        click.echo('Close the figure to continue...')
 
     def get_algorithm_params(self):
         if self.algorithm == "k-NN":
@@ -130,3 +129,10 @@ class Classifier:
             return self.MLP_PARAMS
         elif self.algorithm == "RandomForest":
             return self.RANDOMFOREST_PARAMS
+
+    def get_label_names(self):
+        if self.data == 'CIFAR-10':
+            return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+        else:
+            return ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag',
+                    'Ankle boot']

@@ -1,11 +1,10 @@
-from sklearn.metrics import accuracy_score
-
 from deeplearn import io
 from tensorflow import keras
 import numpy as np
-from pathlib import Path
 
 import click
+
+from deeplearn.io import load_model
 
 
 class Cnn:
@@ -16,10 +15,11 @@ class Cnn:
         self.test_labels = None
 
     def run_classification(self):
-        click.echo("Running classification on pretrained model...")
+        click.echo("[START] Running classification on pretrained model...")
 
-        self.load_data()
-        reconstructed_model = self.load_model()
+        _, (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
+        reconstructed_model = load_model(self.architecture)
+        test_data = []
         if self.architecture == "Resnet-50":
             if self.data == "CIFAR-10":
                 test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
@@ -34,15 +34,4 @@ class Cnn:
              #'accuracy': score,
             'prediction': predictions.tolist()
         }
-        io.export_result(results_cnn, self.data, self.architecture, 'cnn')
-
-    def load_data(self):
-        click.echo('Reading data...')
-
-        _, (self.test_data, self.test_labels) = io.import_data('CIFAR-10', 'raw')
-        click.echo('[DONE] Reading data.')
-
-    def load_model(self):
-        path = Path(__file__).parent.parent
-        reconstructed_model = keras.models.load_model(path/"trained_models/{}".format(self.architecture), compile=True)
-        return reconstructed_model
+        io.export_results(results_cnn, self.data, self.architecture, 'cnn')

@@ -20,7 +20,7 @@ class Model:
     def fetch_dataset(self):
         if path.exists('data/{}_raw_train_data.npy'.format(self.data)):
             (self.train_data, self.train_labels), (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
-            click.echo('Raw data for {} already exists.'.format(self.data))
+            click.echo('Raw data already exists.')
         else:
             click.echo('[START] Fetching {}...'.format(self.data))
             if self.data == 'CIFAR-10':
@@ -32,7 +32,7 @@ class Model:
 
     def feature_representation(self):
         if path.exists('data/{}_rep_train_data.npy'.format(self.data)):
-            click.echo('Feature representation data for {} already exists.'.format(self.data))
+            click.echo('Feature representation data already exists.')
             return
 
         feature_data_train = []
@@ -73,7 +73,7 @@ class Model:
 
     def visual_bag_of_words(self):
         if path.exists('data/{}_vbow_train_data.npy'.format(self.data)):
-            click.echo('Visual Bag of Words data for {} already exists.'.format(self.data))
+            click.echo('Visual Bag of Words data already exists.')
             return
 
         click.echo('[START] Creating Visual Bag of Words...')

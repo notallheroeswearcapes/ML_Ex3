@@ -1,5 +1,5 @@
 import click
-from deeplearn import model, classifier, run_cnn
+from deeplearn import model, classifier, cnn
 
 
 class Context:
@@ -8,16 +8,21 @@ class Context:
         self.data = data
 
 
+ACCEPTED_DATA = ['CIFAR-10', 'Fashion-MNIST']
+ACCEPTED_CLASSIFIERS = ['k-NN', 'MLP', 'RandomForest']
+ACCEPTED_CNN = ['RESNET-50']
+
+
 @click.group(invoke_without_command=True)
 @click.option("-d", "--data", type=str, required=True,
-              help="Dataset to build the model on. Either \'CIFAR-10\' or \'FashionMNIST\'.")
+              help="Dataset to build the model on. Either \'CIFAR-10\' or \'Fashion-MNIST\'.")
 @click.pass_context
 def cli(ctx, data):
     """under construction """
 
-    if data != ("CIFAR-10" or "FashionMNIST"):
+    if data not in ACCEPTED_DATA:
         click.echo(
-            "\nWrong input. Please specify the \'-d\' or \'--data\' option either as \'CIFAR-10\' or \'FashionMNIST\'.")
+            "\nWrong input. Please specify the \'-d\' or \'--data\' option either as one of: {}".format(ACCEPTED_DATA))
         return
 
     ctx.obj = Context(data)
@@ -38,14 +43,13 @@ def cli(ctx, data):
 def classify(ctx, algorithm):
     """Runs a simple classification."""
 
-    if algorithm != ("k-NN" or "MLP" or "RandomForest"):
+    if algorithm not in ACCEPTED_CLASSIFIERS:
         click.echo(
-            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'k-NN\', \'MLP\' or "
-            "\'RandomForest\'.")
+            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as one of: {}.".format(ACCEPTED_CLASSIFIERS))
         return
 
     clf = classifier.Classifier(algorithm, ctx.obj.data)
-    clf.classify()
+    clf.run_classification()
 
 
 @cli.command()
@@ -54,11 +58,12 @@ def classify(ctx, algorithm):
               help="The architecture of the neural network to run on the trained model.")
 def cnn(ctx, architecture):
     """Runs a Convolutional Neural Network."""
-    if architecture != ("Resnet-50"):
+
+    if architecture not in ACCEPTED_CNN:
         click.echo(
-            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'Resnet-50\'.")
+            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as one of: {}.".format(ACCEPTED_CNN))
         return
-    arc = run_cnn.Cnn(architecture, ctx.obj.data)
+    arc = cnn.Cnn(architecture, ctx.obj.data)
     arc.run_classification()
 
 

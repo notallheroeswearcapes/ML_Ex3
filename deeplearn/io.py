@@ -2,6 +2,8 @@ import numpy as np
 import json
 from pathlib import Path
 
+from tensorflow import keras
+
 
 def export_data(data, prefix, train_data=None, train_labels=None, test_data=None, test_labels=None):
     if train_data is not None:
@@ -25,7 +27,13 @@ def import_data(data, prefix):
     return (train_data, train_labels), (test_data, test_labels)
 
 
-def export_result(results, data, clf, input_data):
+def export_results(results, data, clf, input_data):
     with open('data/{}_{}_{}_results.json'.format(data, clf, input_data), 'w') as fp:
         json.dump(results, fp)
     fp.close()
+
+
+def load_model(architecture):
+    path = Path(__file__).parent.parent
+    reconstructed_model = keras.models.load_model(path /"trained_models/{}".format(architecture), compile=True)
+    return reconstructed_model
