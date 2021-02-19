@@ -104,7 +104,7 @@ class Model:
             else:
                 y_test[index] = 255
             index += 1
-        y_train = y_train[np.where(y_train != 255)]
+        y_test = y_test[np.where(y_test != 255)]
         click.echo("[DONE] Extracted SIFT descriptors.")
 
         # For every
