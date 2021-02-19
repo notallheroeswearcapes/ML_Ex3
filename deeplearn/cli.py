@@ -1,5 +1,5 @@
 import click
-from deeplearn import model, classifier
+from deeplearn import model, classifier, run_cnn
 
 
 class Context:
@@ -52,10 +52,14 @@ def classify(ctx, algorithm):
 @click.pass_context
 @click.option("-a", "--architecture", type=str, required=True,
               help="The architecture of the neural network to run on the trained model.")
-def cnn(architecture):
+def cnn(ctx, architecture):
     """Runs a Convolutional Neural Network."""
-
-    click.echo(architecture)
+    if architecture != ("Resnet-50"):
+        click.echo(
+            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'Resnet-50\'.")
+        return
+    arc = run_cnn.Cnn(architecture, ctx.obj.data)
+    arc.run_classification()
 
 
 @cli.command()
