@@ -25,7 +25,7 @@ class Model:
             click.echo('[START] Fetching {}...'.format(self.data))
             if self.data == 'CIFAR-10':
                 (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.cifar10.load_data()
-            elif self.data == 'Fashion-MNIST':
+            elif self.data == 'FashionMNIST':
                 (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.fashion_mnist.load_data()
             io.export_data(self.data, 'raw', self.train_data, self.train_labels, self.test_data, self.test_labels)
             click.echo('[DONE] Fetched {}.'.format(self.data))
@@ -77,8 +77,8 @@ class Model:
             return
 
         click.echo('[START] Creating Visual Bag of Words...')
-        y_train = self.train_labels
-        y_test = self.test_labels
+        y_train = self.train_labels.copy()
+        y_test = self.test_labels.copy()
         descriptor_list_training = []
         descriptor_list_test = []
         length = 0

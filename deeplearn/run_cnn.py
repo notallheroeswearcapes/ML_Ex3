@@ -21,7 +21,9 @@ class Cnn:
         self.load_data()
         reconstructed_model = self.load_model()
         if self.architecture == "Resnet-50":
-            test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
+            if self.data == "CIFAR-10":
+                test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
+
         predictions = reconstructed_model.predict(test_data)
         predictions = np.argmax(predictions, axis=1)
         click.echo('[DONE] Classification with {}.'.format(self.architecture))
