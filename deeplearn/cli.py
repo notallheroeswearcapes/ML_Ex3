@@ -10,7 +10,7 @@ class Context:
 
 @click.group(invoke_without_command=True)
 @click.option("-d", "--data", type=str, required=True,
-              help="Dataset to build the model on. Either CIFAR-10 or FashionMNIST.")
+              help="Dataset to build the model on. Either \'CIFAR-10\' or \'FashionMNIST\'.")
 @click.pass_context
 def cli(ctx, data):
     """under construction """
@@ -32,14 +32,16 @@ def cli(ctx, data):
 
 @cli.command()
 @click.pass_context
-@click.option("-a", "--algorithm", type=str, required=True, help="The classifier algorithm to run on the model.")
+@click.option("-a", "--algorithm", type=str, required=True,
+              help="The classification algorithm to run on the model. Either \'k-NN\', \'MLP\' or "
+                   "\'RandomForest\'.")
 def classify(ctx, algorithm):
     """Runs a simple classification."""
 
-    if algorithm != ("knn" or "mlp" or "randomforest"):
+    if algorithm != ("k-NN" or "MLP" or "RandomForest"):
         click.echo(
-            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'knn\', \'mlp\' or "
-            "\'randomforest\'.")
+            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as either \'k-NN\', \'MLP\' or "
+            "\'RandomForest\'.")
         return
 
     clf = classifier.Classifier(algorithm, ctx.obj.data)
@@ -59,5 +61,5 @@ def cnn(architecture):
 @cli.command()
 @click.pass_context
 def evaluate():
-    """Evaluates and compares the classification results."""
+    """Evaluates and compares classification results."""
     pass

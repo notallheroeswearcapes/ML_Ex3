@@ -17,13 +17,15 @@ def export_data(data, prefix, train_data=None, train_labels=None, test_data=None
 def import_data(data, prefix):
     path = Path(__file__).parent.parent
     train_data = np.load(path / 'data/{}_{}_train_data.npy'.format(data, prefix))
-    train_labels = np.load(path / 'data/{}_{}_train_labels.npy'.format(data, prefix))
     test_data = np.load(path / 'data/{}_{}_test_data.npy'.format(data, prefix))
+    if prefix == 'rep':
+        prefix = 'raw'
+    train_labels = np.load(path / 'data/{}_{}_train_labels.npy'.format(data, prefix))
     test_labels = np.load(path / 'data/{}_{}_test_labels.npy'.format(data, prefix))
     return (train_data, train_labels), (test_data, test_labels)
 
 
-def export_result(results, data, clf):
-    with open('data/{}_{}_results'.format(data, clf), 'w') as fp:
+def export_result(results, data, clf, input_data):
+    with open('data/{}_{}_{}_results.json'.format(data, clf, input_data), 'w') as fp:
         json.dump(results, fp)
     fp.close()

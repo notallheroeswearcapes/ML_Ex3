@@ -63,9 +63,7 @@ optional step:
 4. activate the virtual environment by running `venv\scripts\activate`
 5. install the dependencies of our project by running `pip install -r requirements.txt` (it might be necessary to do this from a conda prompt)
 6. install our CLI by running `pip install .`
-7. now you should be able to run our project by running `deeplearn`
-
-Note: It should not matter where you create the virtual environment but please make sure you run step 6 from the project root directory.
+7. now you should be able to run our project by running `deeplearn --help`
  
 ## Development Guide
 * save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated

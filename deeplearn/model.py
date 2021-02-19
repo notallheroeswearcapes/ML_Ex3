@@ -134,7 +134,7 @@ class Model:
 
         # For every image in both training and testing, build a histogram from the descriptors and which cluster they
         # belong to the values of the histogram is the number of occurrences of the visual words
-        click.echo("Constructing image histograms...")
+        click.echo("[START] Constructing image histograms...")
         training_histograms = []
         for dsc in descriptor_list_training:
             histogram = build_histogram(dsc, kmeans)
@@ -148,5 +148,5 @@ class Model:
         test_histograms = np.asarray(test_histograms)
 
         click.echo("[DONE] Constructed histograms.")
-        io.export_data(self.data, 'vbow', training_histograms, test_histograms, y_train, y_test)
+        io.export_data(self.data, 'vbow', training_histograms, y_train, test_histograms, y_test)
         click.echo('[DONE] Created Visual Bag of Words.')
