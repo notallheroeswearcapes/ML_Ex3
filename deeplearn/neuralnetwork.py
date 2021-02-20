@@ -21,7 +21,7 @@ class NeuralNetwork:
         _, (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
         reconstructed_model = io.load_model(self.architecture, self.data)
         test_data = []
-        if self.architecture == "Resnet-50":
+        if self.architecture == "RESNET-50":
             test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
         if self.architecture == "CNN":
             test_data = self.test_data.astype('float32') / 255
