@@ -1,4 +1,5 @@
 from sklearn.metrics import accuracy_score
+from timeit import default_timer
 
 from deeplearn import io
 from tensorflow import keras
@@ -19,20 +20,29 @@ class NeuralNetwork:
         click.echo("[START] Running classification on pre-trained model...")
 
         _, (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
+
+        st = default_timer()
         reconstructed_model = io.load_model(self.architecture, self.data)
-        test_data = []
+        test_data = self.test_data
+        print(self.data)
         if self.architecture == "RESNET-50":
-            test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
+            if self.data == "Fashion-MNIST":
+                test_data = np.repeat(test_data[..., np.newaxis], 3, -1)
+            test_data = keras.layers.UpSampling2D(size=(4, 4))(test_data)
         if self.architecture == "CNN":
-            test_data = self.test_data.astype('float32') / 255
+            test_data = test_data.astype('float32') / 255
 
         predictions = reconstructed_model.predict(test_data)
         predictions = np.argmax(predictions, axis=1)
+
         accuracy = accuracy_score(predictions, self.test_labels)
+        runtime = default_timer() - st
+
         results_cnn = {
             'data': self.data,
             'algorithm': self.architecture,
             'input_data': 'cnn',
+            'runtime': runtime,
             'accuracy': accuracy,
             'prediction': predictions.tolist()
         }
