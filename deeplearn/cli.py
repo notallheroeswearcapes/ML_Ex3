@@ -1,5 +1,5 @@
 import click
-from deeplearn import model, classifier, cnn
+from deeplearn import model, classifier, neuralnetwork, evaluator
 
 
 class Context:
@@ -10,7 +10,7 @@ class Context:
 
 ACCEPTED_DATA = ['CIFAR-10', 'Fashion-MNIST']
 ACCEPTED_CLASSIFIERS = ['k-NN', 'MLP', 'RandomForest']
-ACCEPTED_CNN = ['RESNET-50']
+ACCEPTED_CNN = ['Resnet-50']
 
 
 @click.group(invoke_without_command=True)
@@ -45,7 +45,8 @@ def classify(ctx, algorithm):
 
     if algorithm not in ACCEPTED_CLASSIFIERS:
         click.echo(
-            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as one of: {}.".format(ACCEPTED_CLASSIFIERS))
+            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as one of: {}.".format(
+                ACCEPTED_CLASSIFIERS))
         return
 
     clf = classifier.Classifier(algorithm, ctx.obj.data)
@@ -61,14 +62,17 @@ def cnn(ctx, architecture):
 
     if architecture not in ACCEPTED_CNN:
         click.echo(
-            "\nWrong input. Please specify the \'-a\' or \'--algorithm\' option as one of: {}.".format(ACCEPTED_CNN))
+            "\nWrong input. Please specify the \'-a\' or \'--architecture\' option as one of: {}.".format(ACCEPTED_CNN))
         return
-    arc = cnn.Cnn(architecture, ctx.obj.data)
+
+    arc = neuralnetwork.NeuralNetwork(architecture, ctx.obj.data)
     arc.run_classification()
 
 
 @cli.command()
 @click.pass_context
-def evaluate():
+def evaluate(ctx):
     """Evaluates and compares classification results."""
-    pass
+
+    eval = evaluator.get_label_names(ctx.obj.data)
+    click.echo(eval)

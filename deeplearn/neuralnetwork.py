@@ -1,13 +1,12 @@
 from deeplearn import io
 from tensorflow import keras
 import numpy as np
-
 import click
+from deeplearn import io, evaluator
 
-from deeplearn.io import load_model
 
+class NeuralNetwork:
 
-class Cnn:
     def __init__(self, architecture, data):
         self.data = data
         self.architecture = architecture
@@ -15,10 +14,10 @@ class Cnn:
         self.test_labels = None
 
     def run_classification(self):
-        click.echo("[START] Running classification on pretrained model...")
+        click.echo("[START] Running classification on pre-trained model...")
 
         _, (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
-        reconstructed_model = load_model(self.architecture)
+        reconstructed_model = io.load_model(self.architecture, self.data)
         test_data = []
         if self.architecture == "Resnet-50":
             if self.data == "CIFAR-10":
@@ -26,7 +25,6 @@ class Cnn:
 
         predictions = reconstructed_model.predict(test_data)
         predictions = np.argmax(predictions, axis=1)
-        click.echo('[DONE] Classification with {}.'.format(self.architecture))
         results_cnn = {
             'data': self.data,
             'algorithm': self.architecture,
@@ -35,3 +33,6 @@ class Cnn:
             'prediction': predictions.tolist()
         }
         io.export_results(results_cnn, self.data, self.architecture, 'cnn')
+        evaluator.create_confusion_matrix(predictions, self.test_labels, self.data, self.architecture)
+        #evaluator.evaluate_cnn(results_cnn) will be usable once accuracy and runtime are provided in the results
+        click.echo('[DONE] Classification with {}.'.format(self.architecture))

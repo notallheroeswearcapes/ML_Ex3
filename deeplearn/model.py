@@ -25,7 +25,7 @@ class Model:
             click.echo('[START] Fetching {}...'.format(self.data))
             if self.data == 'CIFAR-10':
                 (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.cifar10.load_data()
-            elif self.data == 'FashionMNIST':
+            elif self.data == 'Fashion-MNIST':
                 (self.train_data, self.train_labels), (self.test_data, self.test_labels) = datasets.fashion_mnist.load_data()
             io.export_data(self.data, 'raw', self.train_data, self.train_labels, self.test_data, self.test_labels)
             click.echo('[DONE] Fetched {}.'.format(self.data))

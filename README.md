@@ -57,14 +57,15 @@ optional step:
 | UNDER CONSTRUCTION| refer to requirements.txt|
 
 ## Installation Guide (for Windows)
-1. make sure to have Python 3.8, pip 21.0.1 and virtualenv installed on your system
+1. make sure to have at least Python 3.8, pip 21.0.1 and virtualenv installed on your system
 2. clone this repository in a new directory with `git clone https://github.com/notallheroeswearcapes/ML_Ex3.git`
 3. navigate to the project root and create a virtual environment either by following [this tutorial](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env) for PyCharm or by running `virtualenv venv` in the command line
-4. activate the virtual environment by running `venv\scripts\activate`
+4. activate the virtual environment by running `venv\scripts\activate` (single backslashes)
 5. install the dependencies of our project by running `pip install -r requirements.txt` (it might be necessary to do this from a conda prompt)
-6. install our CLI by running `pip install .`
-7. now you should be able to run our project by running `deeplearn --help`
- 
+6. download the additional files containing pre-trained CNN models and place the folder `trained_models` inside the project root directory
+7. install our CLI by running `pip install .`
+8. now you should be able to run our project by running `deeplearn --help`
+
 ## Development Guide
 * save the dependencies: `pip freeze > requirements.txt`, delete the egg (-e) and make sure to have the virtualenv activated
 * install the CLI: `pip install --editable .` from the project root directory

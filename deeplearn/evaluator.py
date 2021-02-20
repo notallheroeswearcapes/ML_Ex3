@@ -23,6 +23,16 @@ def evaluate_classification(results_rep, results_vbow):
     click.echo(table)
 
 
+def evaluate_cnn(results):
+    data = results['data']
+    architecture = results['algorithm']
+    click.echo('\nResults for CNN classification of {} with {}:\n'.format(data, architecture))
+    table = PrettyTable(['Runtime', 'Accuracy'])
+    table.add_row(['{}s'.format(round(results['runtime'], 2)),
+                   '{}'.format(round(results['accuracy'], 4))])
+    click.echo(table)
+
+
 def create_confusion_matrix(prediction, test_labels, data, algorithm, input_data=None):
     # Plot non-normalized confusion matrix
     label_names = get_label_names(data)

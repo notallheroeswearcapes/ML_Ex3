@@ -130,3 +130,6 @@ dmypy.json
 
 # everything PyCharm related
 .idea
+
+# ignore pre-trained models
+trained_models
