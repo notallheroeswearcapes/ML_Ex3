@@ -10,7 +10,7 @@ class Context:
 
 ACCEPTED_DATA = ['CIFAR-10', 'Fashion-MNIST']
 ACCEPTED_CLASSIFIERS = ['k-NN', 'MLP', 'RandomForest']
-ACCEPTED_CNN = ['Resnet-50']
+ACCEPTED_CNN = ['RESNET-50', 'CNN']
 
 
 @click.group(invoke_without_command=True)

@@ -83,7 +83,7 @@ class Model:
         descriptor_list_test = []
         length = 0
         click.echo("[START] Extracting SIFT descriptors...")
-        # For each training image extract descriptors using SIFT and store in descriptor_list
+        # For each training image extract descriptors using SIFT and store in descriptor_list_training
         index = 0
         for img in self.train_data:
             _, descriptors = cv2.SIFT_create().detectAndCompute(img, None)
@@ -95,7 +95,7 @@ class Model:
             index += 1
         y_train = y_train[np.where(y_train != 255)]
 
-        # For each training image extract descriptors using SIFT and store in descriptor_list
+        # For each test image extract descriptors using SIFT and store in descriptor_list_test
         index = 0
         for img in self.test_data:
             _, descriptors = cv2.xfeatures2d.SIFT_create().detectAndCompute(img, None)
@@ -107,7 +107,6 @@ class Model:
         y_test = y_test[np.where(y_test != 255)]
         click.echo("[DONE] Extracted SIFT descriptors.")
 
-        # For every
         def build_histogram(descriptor_list, cluster_alg):
             hist = np.zeros(len(cluster_alg.cluster_centers_))
             cluster_result = cluster_alg.predict(descriptor_list)
@@ -124,6 +123,7 @@ class Model:
                     i += 1
             return stack
 
+        # Stack the descriptors to format nxm to be able to feed to clustering
         descriptor_list_training_stack = format_stack(descriptor_list_training)
 
         # Cluster the descriptors together, every cluster will correspond to a visual word

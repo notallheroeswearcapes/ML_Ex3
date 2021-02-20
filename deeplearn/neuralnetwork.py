@@ -1,3 +1,5 @@
+from sklearn.metrics import accuracy_score
+
 from deeplearn import io
 from tensorflow import keras
 import numpy as np
@@ -20,16 +22,18 @@ class NeuralNetwork:
         reconstructed_model = io.load_model(self.architecture, self.data)
         test_data = []
         if self.architecture == "Resnet-50":
-            if self.data == "CIFAR-10":
-                test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
+            test_data = keras.layers.UpSampling2D(size=(4, 4))(self.test_data)
+        if self.architecture == "CNN":
+            test_data = self.test_data.astype('float32') / 255
 
         predictions = reconstructed_model.predict(test_data)
         predictions = np.argmax(predictions, axis=1)
+        accuracy = accuracy_score(predictions, self.test_labels)
         results_cnn = {
             'data': self.data,
             'algorithm': self.architecture,
             'input_data': 'cnn',
-             #'accuracy': score,
+            'accuracy': accuracy,
             'prediction': predictions.tolist()
         }
         io.export_results(results_cnn, self.data, self.architecture, 'cnn')
