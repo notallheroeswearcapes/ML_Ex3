@@ -49,3 +49,10 @@ def load_model(architecture, data):
     path = Path(__file__).parent.parent
     reconstructed_model = keras.models.load_model(path / "trained_models/{}/{}".format(architecture, data), compile=True)
     return reconstructed_model
+
+
+def get_test_labels(input_data, data):
+    path = Path(__file__).parent.parent
+    if input_data != 'vbow':
+        input_data = 'raw'
+    return np.load(path / 'data/{}_{}_test_labels.npy'.format(data, input_data))

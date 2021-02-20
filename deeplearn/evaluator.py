@@ -29,7 +29,7 @@ def evaluate_classification(results_rep, results_vbow):
 def evaluate_cnn(results):
     data = results['data']
     architecture = results['algorithm']
-    click.echo('\nResults for CNN classification of {} with {}:'.format(data, architecture))
+    click.echo('\nResults for Keras-CNN classification of {} with {}:'.format(data, architecture))
     table = PrettyTable(['Runtime', 'Accuracy'])
     table.add_row(['{}s'.format(round(results['runtime'], 2)),
                    '{}'.format(round(results['accuracy'], 4))])
@@ -66,6 +66,55 @@ def create_confusion_matrix(prediction, test_labels, data, algorithm, input_data
         title += '\nInput data: {}'.format(input_data)
     disp.ax_.set_title(title)
     plt.xticks(rotation=45)
+    click.echo('Close the figure to continue...')
+    plt.show()
+
+
+def get_confusion_matrix(result, ax):
+    label_names = get_label_names(result['data'])
+    test_labels = io.get_test_labels(result['input_data'], result['data'])
+    cm = confusion_matrix(test_labels, result['prediction'])
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=label_names)
+    disp.plot(ax=ax)
+
+
+def create_evaluation_figure(data, clf_list):
+    label_names = get_label_names(data)
+
+    simple = False
+    for clf in clf_list:
+        if clf in CLASSIFIERS:
+            simple = True
+
+    if simple:
+        fig, axes = plt.subplots(len(clf_list), 2)
+    else:
+        fig, axes = plt.subplots(len(clf_list))
+    fig.tight_layout()
+
+    i = 0
+    for clf in clf_list:
+        if clf in CLASSIFIERS:
+            results_rep, results_vbow = io.import_classifier_results(data, clf)
+            get_confusion_matrix(results_rep, axes[i, 0])
+            axes[i, 0].set_title('{}: feature representation'.format(clf))
+            axes[i, 0].set_xticklabels(label_names, rotation=45)
+            get_confusion_matrix(results_vbow, axes[i, 1])
+            axes[i, 1].set_title('{}: visual bag of words'.format(clf))
+            axes[i, 1].set_xticklabels(label_names, rotation=45)
+        else:
+            results = io.import_cnn_results(data, clf)
+            if simple:
+                get_confusion_matrix(results, axes[i, 0])
+                axes[i, 0].set_title('{}'.format(clf))
+                axes[i, 0].set_xticklabels(label_names, rotation=45)
+                axes[i, 1].set_visible(False)
+            else:
+                get_confusion_matrix(results, axes[i])
+                axes[i].set_title('{}'.format(clf))
+                axes[i].set_xticklabels(label_names, rotation=45)
+        i += 1
+
     click.echo('Close the figure to continue...')
     plt.show()
 

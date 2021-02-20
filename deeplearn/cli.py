@@ -11,7 +11,7 @@ class Context:
 
 ACCEPTED_DATA = ['CIFAR-10', 'Fashion-MNIST']
 ACCEPTED_CLASSIFIERS = ['k-NN', 'MLP', 'RandomForest']
-ACCEPTED_CNN = ['Resnet-50', 'CNN']
+ACCEPTED_CNN = ['Resnet-50', 'Keras-CNN']
 
 
 @click.group(invoke_without_command=True)
@@ -95,7 +95,7 @@ def evaluate(ctx, classifiers):
                     return
         if clf in ACCEPTED_CNN:
             if not path.exists('data/{}_{}_cnn_results.json'.format(ctx.obj.data, clf)):
-                click.echo('\nCNN classification results for {} with {} not available.'.format(ctx.obj.data, clf))
+                click.echo('\nKeras-CNN classification results for {} with {} not available.'.format(ctx.obj.data, clf))
                 if click.confirm('Do you want to run this classification?'):
                     arc = neuralnetwork.NeuralNetwork(clf, ctx.obj.data)
                     arc.run_classification()
@@ -104,3 +104,4 @@ def evaluate(ctx, classifiers):
                     return
 
     evaluator.evaluate(ctx.obj.data, classifiers)
+    evaluator.create_evaluation_figure(ctx.obj.data, classifiers)
