@@ -25,7 +25,7 @@ class NeuralNetwork:
         reconstructed_model = io.load_model(self.architecture, self.data)
         test_data = self.test_data
 
-        if self.architecture == "RESNET-50":
+        if self.architecture == "Resnet-50":
             if self.data == "Fashion-MNIST":
                 test_data = np.repeat(test_data[..., np.newaxis], 3, -1)
             test_data = keras.layers.UpSampling2D(size=(4, 4))(test_data)
