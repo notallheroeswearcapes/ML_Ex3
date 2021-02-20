@@ -32,10 +32,17 @@ def export_results(results, data, clf, input_data):
     fp.close()
 
 
-def import_results(data, clf, input_data):
-    with open('data/{}_{}_{}_results.json'.format(data, clf, input_data)) as file:
-        data = json.load(file)
-        return data
+def import_classifier_results(data, clf):
+    with open('data/{}_{}_{}_results.json'.format(data, clf, 'rep')) as file:
+        rep = json.load(file)
+    with open('data/{}_{}_{}_results.json'.format(data, clf, 'vbow')) as file:
+        vbow = json.load(file)
+    return rep, vbow
+
+
+def import_cnn_results(data, cnn):
+    with open('data/{}_{}_{}_results.json'.format(data, cnn, 'cnn')) as file:
+        return json.load(file)
 
 
 def load_model(architecture, data):

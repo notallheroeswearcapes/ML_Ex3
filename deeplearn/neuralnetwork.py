@@ -17,7 +17,7 @@ class NeuralNetwork:
         self.test_labels = None
 
     def run_classification(self):
-        click.echo("[START] Running classification on pre-trained model...")
+        click.echo("[START] Running CNN classification on pre-trained model...")
 
         _, (self.test_data, self.test_labels) = io.import_data(self.data, 'raw')
 
@@ -25,7 +25,7 @@ class NeuralNetwork:
         reconstructed_model = io.load_model(self.architecture, self.data)
         test_data = self.test_data
         print(self.data)
-        if self.architecture == "RESNET-50":
+        if self.architecture == "Resnet-50":
             if self.data == "Fashion-MNIST":
                 test_data = np.repeat(test_data[..., np.newaxis], 3, -1)
             test_data = keras.layers.UpSampling2D(size=(4, 4))(test_data)
@@ -48,5 +48,5 @@ class NeuralNetwork:
         }
         io.export_results(results_cnn, self.data, self.architecture, 'cnn')
         evaluator.create_confusion_matrix(predictions, self.test_labels, self.data, self.architecture)
-        #evaluator.evaluate_cnn(results_cnn) will be usable once accuracy and runtime are provided in the results
-        click.echo('[DONE] Classification with {}.'.format(self.architecture))
+        evaluator.evaluate_cnn(results_cnn)
+        click.echo('[DONE] CNN classification with {}.'.format(self.architecture))

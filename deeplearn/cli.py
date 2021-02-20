@@ -1,4 +1,5 @@
 import click
+from os import path
 from deeplearn import model, classifier, neuralnetwork, evaluator
 
 
@@ -10,7 +11,7 @@ class Context:
 
 ACCEPTED_DATA = ['CIFAR-10', 'Fashion-MNIST']
 ACCEPTED_CLASSIFIERS = ['k-NN', 'MLP', 'RandomForest']
-ACCEPTED_CNN = ['RESNET-50', 'CNN']
+ACCEPTED_CNN = ['Resnet-50', 'CNN']
 
 
 @click.group(invoke_without_command=True)
@@ -71,8 +72,35 @@ def cnn(ctx, architecture):
 
 @cli.command()
 @click.pass_context
-def evaluate(ctx):
+@click.option("-c", "--classifiers", type=str, multiple=True, required=True,
+              help="The classifiers to evaluate. Multiple classifiers are allowed. Specify at least one.")
+def evaluate(ctx, classifiers):
     """Evaluates and compares classification results."""
 
-    eval = evaluator.get_label_names(ctx.obj.data)
-    click.echo(eval)
+    for clf in classifiers:
+        if clf not in ACCEPTED_CLASSIFIERS and clf not in ACCEPTED_CNN:
+            click.echo(
+                "\nWrong input. Please specify the \'-c\' or \'--classifiers\' option as {} or {}.".format(
+                    ACCEPTED_CLASSIFIERS, ACCEPTED_CNN))
+            return
+        if clf in ACCEPTED_CLASSIFIERS:
+            if not (path.exists('data/{}_{}_rep_results.json'.format(ctx.obj.data, clf)) and path.exists(
+                    'data/{}_{}_vbow_results.json'.format(ctx.obj.data, clf))):
+                click.echo('\nClassification results for {} with {} not available.'.format(ctx.obj.data, clf))
+                if click.confirm('Do you want to run this classification?'):
+                    clf = classifier.Classifier(clf, ctx.obj.data)
+                    clf.run_classification()
+                else:
+                    click.echo('Stopping deeplearn.')
+                    return
+        if clf in ACCEPTED_CNN:
+            if not path.exists('data/{}_{}_cnn_results.json'.format(ctx.obj.data, clf)):
+                click.echo('\nCNN classification results for {} with {} not available.'.format(ctx.obj.data, clf))
+                if click.confirm('Do you want to run this classification?'):
+                    arc = neuralnetwork.NeuralNetwork(clf, ctx.obj.data)
+                    arc.run_classification()
+                else:
+                    click.echo('Stopping deeplearn.')
+                    return
+
+    evaluator.evaluate(ctx.obj.data, classifiers)
