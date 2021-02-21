@@ -18,7 +18,7 @@ The resulting classification predictions can be evaluated and compared.
 We use the package [click](https://click.palletsprojects.com/en/7.x/) to create a command-line interface. 
 The implementations of the traditional classifiers are taken from [sklearn](https://scikit-learn.org/stable/supervised_learning.html#supervised-learning).
 As the training of the CNN models is computationally expensive, we ran this in a Google Colab and provide only the pre-trained models here. 
-These files need to be downloaded separately and placed inside this project. For this exercise, we provide these files in the respective TUWEL hand-in event for large files. 
+These files need to be downloaded separately and placed inside this project. As these files are very large and exceed the file size limit on TUWEL, we provide them on [Google Drive](https://drive.google.com/file/d/1zbqtcNQQHAjN6txrqvQKYazcd_FYMSX0/view?usp=sharing).
 The raw data of CIFAR-10 and Fashion-MNIST does not need to be downloaded manually as they are fetched from [TensorFlow](https://www.tensorflow.org/api_docs/python/tf/keras/datasets).
 Classification predictions are evaluated regarding runtime and accuracy. 
 Please note that the runtimes given for the CNNs are only calculated for the prediction. The time for training is not included as it would not make the results comparable.
@@ -31,7 +31,7 @@ Disclaimer: We only guarantee that this project will run on a machine with Windo
 3. navigate to the project root and create a virtual environment either by following [this tutorial](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html#python_create_virtual_env) for PyCharm or by running `virtualenv venv` in the command line
 4. activate the virtual environment by running `venv\scripts\activate` (single backslashes)
 5. install the dependencies of our project by running `pip install -r requirements.txt` (it might be necessary to do this from a conda prompt)
-6. download the additional files (provided in TUWEL) containing the pre-trained CNN models and place the folder `trained_models` inside the project root directory
+6. download the additional files provided on [Google Drive](https://drive.google.com/file/d/1zbqtcNQQHAjN6txrqvQKYazcd_FYMSX0/view?usp=sharing) containing the pre-trained CNN models and place the folder `trained_models` inside the project root directory
 7. install our CLI by running `pip install .`
 8. now you should be able to run our project by running `deeplearn --help`
 
