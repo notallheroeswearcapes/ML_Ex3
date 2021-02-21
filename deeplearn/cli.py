@@ -19,7 +19,9 @@ ACCEPTED_CNN = ['Resnet-50', 'Keras-CNN']
               help="Dataset to build the model on. Either \'CIFAR-10\' or \'Fashion-MNIST\'.")
 @click.pass_context
 def cli(ctx, data):
-    """under construction """
+    """Deeplearn classifies and evaluates image datasets 'CIFAR-10' or 'Fashion-MNIST' with simple classification
+    algorithms 'k-NN', 'MLP' and 'RandomForest' and Convolutional Neural Network (CNN) architectures 'Resnet-50' and
+    'Keras-CNN'."""
 
     if data not in ACCEPTED_DATA:
         click.echo(
@@ -72,7 +74,7 @@ def cnn(ctx, architecture):
 
 @cli.command()
 @click.pass_context
-@click.option("-c", "--classifiers", type=str, multiple=True, required=True,
+@click.option("-c", "--classifier", type=str, multiple=True, required=True,
               help="The classifiers to evaluate. Multiple classifiers are allowed. Specify at least one.")
 def evaluate(ctx, classifiers):
     """Evaluates and compares classification results."""

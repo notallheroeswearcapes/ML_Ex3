@@ -13,7 +13,7 @@ def read_requirements():
 
 setuptools.setup(
     name="deeplearn",
-    version="0.1",
+    version="1.0",
     author="Matthias Eder",
     author_email="e1624856@student.tuwien.ac.at",
     description="The third exercise of group 09 for the Machine Learning course of TU Wien in the "

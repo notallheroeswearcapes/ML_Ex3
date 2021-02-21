@@ -1,7 +1,5 @@
 from sklearn.metrics import accuracy_score
 from timeit import default_timer
-
-from deeplearn import io
 from tensorflow import keras
 import numpy as np
 import click

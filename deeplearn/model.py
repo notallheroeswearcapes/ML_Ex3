@@ -2,6 +2,7 @@ import click
 import cv2
 import numpy as np
 from keras import datasets
+from timeit import default_timer
 from os import path
 from deeplearn import io
 from sklearn.cluster import KMeans
@@ -39,7 +40,7 @@ class Model:
         feature_data_test = []
 
         click.echo("[START] Creating feature representation for training data...")
-
+        st = default_timer()
         for fileName in self.train_data:
             fileImage = Image.fromarray(fileName)
 
@@ -50,10 +51,11 @@ class Model:
             features = fileImage.histogram()
 
             feature_data_train.append(features)
+        runtime = default_timer() - st
+        click.echo("[DONE] Created feature representation for training data in {}s.".format(round(runtime, 2)))
 
-        click.echo("[DONE] Created feature representation for training data.")
         click.echo("[START] Creating feature representation for test data...")
-
+        st = default_timer()
         for fileName in self.test_data:
             fileImage = Image.fromarray(fileName)
 
@@ -64,8 +66,8 @@ class Model:
             features = fileImage.histogram()
 
             feature_data_test.append(features)
-
-        click.echo("[DONE] Created feature representation for test data.")
+        runtime = default_timer() - st
+        click.echo("[DONE] Created feature representation for test data in {}s.".format(round(runtime, 2)))
 
         train_data = np.array(feature_data_train)
         test_data = np.array(feature_data_test)
@@ -77,6 +79,7 @@ class Model:
             return
 
         click.echo('[START] Creating Visual Bag of Words...')
+        st = default_timer()
         y_train = self.train_labels.copy()
         y_test = self.test_labels.copy()
         descriptor_list_training = []
@@ -148,5 +151,6 @@ class Model:
         test_histograms = np.asarray(test_histograms)
 
         click.echo("[DONE] Constructed histograms.")
+        runtime = default_timer() - st
         io.export_data(self.data, 'vbow', training_histograms, y_train, test_histograms, y_test)
-        click.echo('[DONE] Created Visual Bag of Words.')
+        click.echo('[DONE] Created Visual Bag of Words in {}s.'.format(round(runtime, 2)))
